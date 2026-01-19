@@ -37,28 +37,14 @@ function update_script() {
 
   RELEASE="18.0"
   LATEST_VERSION=$(curl -fsSL "https://nightly.odoo.com/18.0/nightly/deb/odoo_18.0.20240927_all.deb")
+  curl -fsSL https://nightly.odoo.com/18.0/nightly/deb/odoo_18.0.20240927_all.deb -o /opt/odoo.deb
+  $STD apt install -y /opt/odoo.deb
+  rm -f /opt/odoo.deb
+  echo "$LATEST_VERSION" >/opt/${APP}_version.txt
 
-  if [[ "${LATEST_VERSION}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
-    msg_info "Stopping ${APP} service"
-    systemctl stop odoo
-    msg_ok "Stopped Service"
-
-    msg_info "Updating ${APP} to ${LATEST_VERSION}"
-    curl -fsSL https://nightly.odoo.com/18.0/nightly/deb/odoo_18.0.20240927_all.deb -o /opt/odoo.deb
-    $STD apt install -y /opt/odoo.deb
-    rm -f /opt/odoo.deb
-    echo "$LATEST_VERSION" >/opt/${APP}_version.txt
-    msg_ok "Updated ${APP} to ${LATEST_VERSION}"
-
-    msg_info "Starting Service"
-    systemctl start odoo
-    msg_ok "Started Service"
-    msg_ok "Updated successfully!"
-  else
-    msg_ok "No update required. ${APP} is already at ${LATEST_VERSION}"
-  fi
-  exit
-}
+  msg_info "Starting Service"
+  systemctl start odoo
+  msg_ok "Started Service"
 
 start
 build_container
