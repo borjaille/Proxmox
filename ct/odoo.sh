@@ -36,11 +36,7 @@ function update_script() {
   fi
 
   RELEASE="18.0"
-  LATEST_VERSION=$(curl -fsSL "https://nightly.odoo.com/${RELEASE}/nightly/deb/" |
-    grep -oP "odoo_${RELEASE}\.\d+_all\.deb" |
-    sed -E "s/odoo_(${RELEASE}\.[0-9]+)_all\.deb/\1/" |
-    sort -V |
-    tail -n1)
+  LATEST_VERSION=$(curl -fsSL "https://nightly.odoo.com/18.0/nightly/deb/odoo_18.0.20240927_all.deb")
 
   if [[ "${LATEST_VERSION}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
     msg_info "Stopping ${APP} service"
@@ -48,7 +44,7 @@ function update_script() {
     msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to ${LATEST_VERSION}"
-    curl -fsSL https://nightly.odoo.com/${RELEASE}/nightly/deb/odoo_${RELEASE}.latest_all.deb -o /opt/odoo.deb
+    curl -fsSL https://nightly.odoo.com/18.0/nightly/deb/odoo_18.0.20240927_all.deb -o /opt/odoo.deb
     $STD apt install -y /opt/odoo.deb
     rm -f /opt/odoo.deb
     echo "$LATEST_VERSION" >/opt/${APP}_version.txt
