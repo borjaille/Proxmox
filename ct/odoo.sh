@@ -45,6 +45,7 @@ function update_script() {
   msg_info "Starting Service"
   systemctl start odoo
   msg_ok "Started Service"
+}
 
 start
 build_container
